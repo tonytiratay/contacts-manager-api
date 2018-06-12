@@ -3,8 +3,11 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require ('jsonwebtoken');
 const passport = require('passport');
-
 const keys = require('../../config/keys');
+
+// Load input validators
+
+const validateRegisterInput = require('../../validation/register');
 
 // Load User model
 
@@ -26,18 +29,21 @@ router.get('/', (req, res) => {
 
 router.post('/register', (req, res) => {
 
-	let { name, email, password } = req.body;
+	let { name, email, password } = req.body; // Extract user infos
+	let { errors, isValid } = validateRegisterInput(req.body); // Genrate errors objects if req.body is not valid
 
+	if (!isValid) return res.status(400).json(errors);
+	
 	User.findOne({ email })
 		.then((user) => {
+
 			if (user) {
-				// Send error message
-				res.status(400).json({
-					email: "Email already exists"
-				})
+				// Send error message if user already exists
+				errors.email = "Email already exists"; 
+				res.status(400).json(errors)
 
 			} else {
-
+				// Create new User
 				const newUser = new User({
 					name,
 					email,
@@ -59,7 +65,7 @@ router.post('/register', (req, res) => {
 								console.log(user)
 								res.json(user)
 							})
-							.catch( (err) => console.log(err) )
+							.catch( (err) => { res.status(400).json(err.message) } )
 					})
 				})
 			}

@@ -26,20 +26,27 @@ router.post('/register', (req, res) => {
 	User.findOne({ email })
 		.then((user) => {
 			if (user) {
-				console.log('user existing: ', user)
+				// Send error message
 				res.status(400).json({
 					email: "Email already exists"
 				})
+
 			} else {
+
 				const newUser = new User({
 					name,
 					email,
 					password
 				});
+
+				// Generate Salt for password encryption
 				bcrypt.genSalt(10, (err, salt) => {
+					
 					if (err) throw err;
+
+					// Generate hash from password and replace plain text password befor saving
 					bcrypt.hash(newUser.password, salt, (err, hash) => {
-						console.log(err, hash)
+						
 						if(err) throw err;
 						newUser.password = hash;
 						newUser.save()

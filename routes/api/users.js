@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 	})
 });
 
-// @router GET api/users/register
+// @router POST api/users/register
 // @desc Register a user
 // @access Public
 
@@ -60,5 +60,33 @@ router.post('/register', (req, res) => {
 			}
 		}).catch((err) => { throw err })
 });
+
+// @router POST api/users/login
+// @desc Return a token
+// @access Public
+
+router.post('/login', (req, res) => {
+	
+	const { email, password } = req.body;
+	User.findOne({ email })
+		.then((user) => {
+
+			// Check for user
+			if (!user) return res.status(404).json({
+				email: 'User not found'
+			});
+
+			// Check password
+			bcrypt.compare(password, user.password)
+				.then((isMatch) => {
+					if (isMatch) {
+						res.json({ message: 'success' });
+					} else {
+						return res.status(400).json({ password: 'Password did not match' })
+					}
+				})
+		})
+		.catch()
+})
 
 module.exports = router;

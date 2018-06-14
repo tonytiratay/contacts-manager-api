@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
 
 router.post('/register', (req, res) => {
 
-	let { name, email, password } = req.body; // Extract user infos
+	let { email, password } = req.body; // Extract user infos
 	let { errors, isValid } = validateRegisterInput(req.body); // Genrate errors objects if req.body is not valid
 
 	if (!isValid) return res.status(400).json(errors);
@@ -45,7 +45,6 @@ router.post('/register', (req, res) => {
 			} else {
 				// Create new User
 				const newUser = new User({
-					name,
 					email,
 					password
 				});
@@ -122,7 +121,6 @@ router.get('/current', passport.authenticate('jwt', { session: false}), (req, re
 	const { _id, email, name } = req.user;
 	res.json({
 		_id,
-		name,
 		email,
 	});
 });

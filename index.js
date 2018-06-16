@@ -34,6 +34,9 @@ jwtStrategy(passport);
 
 app.use('/api/users', users);
 app.use('/api/profile', profile);
+app.get('/api/hook', (req, res)=>{
+	console.log(req)
+})
 
 const port = process.env.PORT || 5000;
 

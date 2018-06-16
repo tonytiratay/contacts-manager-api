@@ -6,41 +6,23 @@ module.exports = function validateRegisterInput(data) {
 	let errors = {};
 
 	// Assign empty strings if no value
-	// name = !isEmpty(name) ? name : '';
-	email = !isEmpty(email) ? email : '';
-	password = !isEmpty(password) ? password : '';
-	password2 = !isEmpty(password2) ? password2 : '';
-	// if( !Validator.isLength(name, { min: 2, max: 30 }) ) {
-	// 	errors.name = "Name must be between 2 and 30 characters";
-	// }
-
-	// if(Validator.isEmpty(name)) {
-	// 	errors.name = "Name must be between 2 and 30 characters";
-	// }
-
-	if(Validator.isEmpty(email)) {
-		errors.email = "Email isrequired";
-	}
+	email = isEmpty(email) ? '' : email;
+	password = isEmpty(password) ? '' : password;
+	
 	if(!Validator.isEmail(email)) {
-		errors.email = "Invalid email";
+		errors.email = "Il semble que cet email ne soit pas valide :)";
 	}
-
-	if(Validator.isEmpty(password)) {
-		errors.password = "Password is required";
+	if(Validator.isEmpty(email)) {
+		errors.email = "Vous devez fournir un email pour vous enregistrer";
 	}
 
 	if( !Validator.isLength(password, { min: 6 }) ) {
-		errors.password = "Password must be between 6 and 30 characters";
+		errors.password = "Le mot de passe doit faire entre 6 et 30 caractères";
 	}
 
-	if(!Validator.equals(password, password2)) {
-		errors.password2 = "Passwords must match";
+	if(Validator.isEmpty(password)) {
+		errors.password = "Merci de renseigner votre mot de passe";
 	}
-
-	if(Validator.isEmpty(password2)) {
-		errors.password2 = "Confirm Password is required";
-	}
-
 
 	return { errors, isValid: isEmpty(errors) };
 };
